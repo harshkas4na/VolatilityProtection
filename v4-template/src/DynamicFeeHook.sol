@@ -14,7 +14,7 @@ import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 contract DynamicFeeHook is BaseHook, AbstractCallback{
     using PoolIdLibrary for PoolKey;
 
-    event VolatileTrader(address user);
+    event VolatileTrader(address indexed user);
 
     constructor(IPoolManager _poolManager) BaseHook(_poolManager)AbstractCallback(0xc9f36411C9897e7F959D99ffca2a0Ba7ee0D7bDA) payable {}
 
