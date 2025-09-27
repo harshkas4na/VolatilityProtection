@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "../lib/reactive-lib/src/abstract-base/AbstractCallback.sol";
+
 // Minimal interface for the 1inch LOP post-interaction callback
 interface IPostInteraction {
     function postInteraction(
@@ -20,7 +22,7 @@ interface IPostInteraction {
  * 2. The trader's pre-signed limit order can then be filled, as the `isHedgeActive` predicate will return true.
  * 3. After the fill, the 1inch protocol calls `postInteraction` to "disarm" the hedge, preventing re-use.
  */
-contract TraderHedgeLOP is IPostInteraction {
+contract TraderHedgeLOP is IPostInteraction, AbstractCallback {
     // The address of the trader who is currently permitted to have their hedge order filled.
     address public activeHedger;
 
