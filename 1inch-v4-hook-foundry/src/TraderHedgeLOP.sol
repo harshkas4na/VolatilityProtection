@@ -38,7 +38,7 @@ contract TraderHedgeLOP is IPostInteraction, AbstractCallback {
         _;
     }
 
-    constructor(address _limitOrderProtocolAddress) {
+    constructor(address _limitOrderProtocolAddress) AbstractCallback(0x0D3E76De6bC44309083cAAFdB49A088B8a250947) {
         limitOrderProtocolAddress = _limitOrderProtocolAddress;
     }
 
