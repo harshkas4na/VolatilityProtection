@@ -1,0 +1,11 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+
+# Add this section for remappings
+[remappings]
+'@1inch/limit-order-protocol-v4/' = 'lib/limit-order-protocol/contracts/v4/'
+'@1inch/solidity-utils/' = 'lib/limit-order-protocol/lib/solidity-utils/contracts/'
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config
