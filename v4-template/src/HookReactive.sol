@@ -29,7 +29,7 @@ contract HookReactive is IReactive, AbstractReactive {
         if (!vm) {
             // Subscribe to event contract
             service.subscribe(
-                11155111,
+                8453,
                 eventContract,
                 EVENT_TOPIC_0,
                 REACTIVE_IGNORE,
@@ -37,7 +37,7 @@ contract HookReactive is IReactive, AbstractReactive {
                 REACTIVE_IGNORE
             );
             service.subscribe(
-                11155111,
+                8453,
                 hookContract,
                 VOLATILE_TOPIC_0,
                 REACTIVE_IGNORE,
@@ -54,7 +54,7 @@ contract HookReactive is IReactive, AbstractReactive {
             address(0)
             );
             // Emit callback to Sepolia chain
-            emit Callback(11155111, hookContract, CALLBACK_GAS_LIMIT, payload);
+            emit Callback(8453, hookContract, CALLBACK_GAS_LIMIT, payload);
         }
         if (log.topic_0 == VOLATILE_TOPIC_0){
             bytes memory payload = abi.encodeWithSignature(
@@ -63,7 +63,7 @@ contract HookReactive is IReactive, AbstractReactive {
                 address(uint160(uint256(log.topic_1)))
             );
 
-            emit Callback(11155111, lopContract, CALLBACK_GAS_LIMIT, payload);
+            emit Callback(8453, lopContract, CALLBACK_GAS_LIMIT, payload);
         }
     }
 

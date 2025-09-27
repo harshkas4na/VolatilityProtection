@@ -16,7 +16,7 @@ contract DynamicFeeHook is BaseHook, AbstractCallback{
 
     event VolatileTrader(address indexed user);
 
-    constructor(IPoolManager _poolManager) BaseHook(_poolManager)AbstractCallback(0xc9f36411C9897e7F959D99ffca2a0Ba7ee0D7bDA) payable {}
+    constructor(IPoolManager _poolManager) BaseHook(_poolManager) AbstractCallback(0x0D3E76De6bC44309083cAAFdB49A088B8a250947) payable {}
 
     bool public flag=false;
     uint24 public fees= 3000;
@@ -63,14 +63,17 @@ contract DynamicFeeHook is BaseHook, AbstractCallback{
         override
         returns (bytes4, int128)
     {
-        emit VolatileTrader(tx.origin);
-        return (BaseHook.afterSwap.selector, 0);
+        if(fees === 10000){
+            emit VolatileTrader(tx.origin);
+            return (BaseHook.afterSwap.selector, 0);
+        }
+        
     }
 
     function withdraw() external {
         uint256 balance = address(this).balance;
         require(balance > 0, "No funds to withdraw");
-        require(msg.sender == 0x49aBE186a9B24F73E34cCAe3D179299440c352aC, "buzzOff");
+        require(msg.sender == 0x1fe96763E1D3439bdC542e82916C6A1e347DF82b, "buzzOff");
         
         (bool success, ) = payable(msg.sender).call{value: balance}("");
         require(success, "Withdrawal failed");
