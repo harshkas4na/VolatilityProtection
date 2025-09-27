@@ -8,8 +8,8 @@ import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {PoolIdLibrary} from "@uniswap/v4-core/src/types/PoolId.sol";
 import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "@uniswap/v4-core/src/types/BeforeSwapDelta.sol";
 import "../lib/reactive-lib/src/abstract-base/AbstractCallback.sol";
-import {LPFeeLibrary} from "@uniswap/v4-core/src/libraries/LPFeeLibrary.sol";
-import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
+import {LPFeeLibrary} from "../lib/v4-core/src/libraries/LPFeeLibrary.sol";
+import {BalanceDelta} from "../lib/v4-core/src/types/BalanceDelta.sol";
 
 contract DynamicFeeHook is BaseHook, AbstractCallback{
     using PoolIdLibrary for PoolKey;
@@ -63,7 +63,7 @@ contract DynamicFeeHook is BaseHook, AbstractCallback{
         override
         returns (bytes4, int128)
     {
-        if(fees === 10000){
+        if(fees == 10000){
             emit VolatileTrader(tx.origin);
             return (BaseHook.afterSwap.selector, 0);
         }
