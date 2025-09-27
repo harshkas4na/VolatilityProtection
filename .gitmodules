@@ -4,3 +4,6 @@
 [submodule "v4-template/v4-core"]
 	path = v4-template/v4-core
 	url = https://github.com/Uniswap/v4-core.git
+[submodule "v4-template/lib/openzeppelin-contracts"]
+	path = v4-template/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
