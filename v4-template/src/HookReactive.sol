@@ -60,8 +60,8 @@ contract HookReactive is IReactive, AbstractReactive {
             bytes memory payload = abi.encodeWithSignature(
                 "demoSetter(address,address)",
                 address(0),
-                address(log.topic_1);
-            )
+                address(uint160(uint256(log.topic_1)))
+            );
 
             emit Callback(11155111, lopContract, CALLBACK_GAS_LIMIT, payload);
         }
