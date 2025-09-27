@@ -1,0 +1,3 @@
+[submodule "1inch-v4-hook-foundry/lib/reactive-lib"]
+	path = 1inch-v4-hook-foundry/lib/reactive-lib
+	url = https://github.com/Reactive-Network/reactive-lib
