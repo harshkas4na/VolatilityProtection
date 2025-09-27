@@ -14,6 +14,8 @@ import {LPFeeLibrary} from "@uniswap/v4-core/src/libraries/LPFeeLibrary.sol";
 contract DynamicFeeHook is BaseHook, AbstractCallback{
     using PoolIdLibrary for PoolKey;
 
+    event VolatileTrader(address user);
+
     constructor(IPoolManager _poolManager) BaseHook(_poolManager)AbstractCallback(0xc9f36411C9897e7F959D99ffca2a0Ba7ee0D7bDA) payable {}
 
     bool public flag=false;
@@ -33,7 +35,7 @@ contract DynamicFeeHook is BaseHook, AbstractCallback{
             beforeRemoveLiquidity: false,
             afterRemoveLiquidity: false,
             beforeSwap: true,
-            afterSwap: false,
+            afterSwap: true,
             beforeDonate: false,    
             afterDonate: false,
             beforeSwapReturnDelta: false,
@@ -54,7 +56,15 @@ contract DynamicFeeHook is BaseHook, AbstractCallback{
         returns (bytes4, BeforeSwapDelta, uint24)
     {
             return (BaseHook.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, (fees | LPFeeLibrary.OVERRIDE_FEE_FLAG));
+    }
 
+    function _afterSwap(address, PoolKey calldata /*key*/, SwapParams calldata, BalanceDelta, bytes calldata)
+        internal
+        override
+        returns (bytes4, int128)
+    {
+        emit VolatileTrader(tx.origin);
+        return (BaseHook.afterSwap.selector, 0);
     }
 
     function withdraw() external {
