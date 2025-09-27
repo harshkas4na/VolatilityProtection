@@ -9,7 +9,7 @@ import {PoolIdLibrary} from "@uniswap/v4-core/src/types/PoolId.sol";
 import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from "@uniswap/v4-core/src/types/BeforeSwapDelta.sol";
 import "../lib/reactive-lib/src/abstract-base/AbstractCallback.sol";
 import {LPFeeLibrary} from "@uniswap/v4-core/src/libraries/LPFeeLibrary.sol";
-
+import {BalanceDelta} from "@uniswap/v4-core/src/types/BalanceDelta.sol";
 
 contract DynamicFeeHook is BaseHook, AbstractCallback{
     using PoolIdLibrary for PoolKey;
