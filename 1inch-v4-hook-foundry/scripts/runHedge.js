@@ -150,99 +150,99 @@ async function main() {
     );
     console.log("Order signed successfully.");
 
-    // --- 5. FILL THE ORDER ---
-    console.log("Attempting to fill the order...");
+    // // --- 5. FILL THE ORDER ---
+    // console.log("Attempting to fill the order...");
     
-    // Check DAI balance first
-    const makerAssetContract = new ethers.Contract(DAI_ADDRESS, [
-        "function balanceOf(address) view returns (uint256)",
-        "function approve(address,uint256) returns (bool)"
-    ], signer);
+    // // Check DAI balance first
+    // const makerAssetContract = new ethers.Contract(DAI_ADDRESS, [
+    //     "function balanceOf(address) view returns (uint256)",
+    //     "function approve(address,uint256) returns (bool)"
+    // ], signer);
     
-    const daiBalance = await makerAssetContract.balanceOf(signer.address);
-    console.log("DAI balance:", ethers.formatUnits(daiBalance, 18));
+    // const daiBalance = await makerAssetContract.balanceOf(signer.address);
+    // console.log("DAI balance:", ethers.formatUnits(daiBalance, 18));
     
-    if (daiBalance < ethers.parseUnits("0.1", 18)) {
-        console.log("❌ Insufficient DAI balance to create this order");
-        return;
-    }
+    // if (daiBalance < ethers.parseUnits("0.1", 18)) {
+    //     console.log("❌ Insufficient DAI balance to create this order");
+    //     return;
+    // }
     
-    // Approve DAI spending
-    console.log("Approving DAI spending...");
-    const approveTx = await makerAssetContract.approve(ONE_INCH_LOP_ADDRESS, ethers.MaxUint256);
-    await approveTx.wait();
-    console.log("DEBUG STEP A: Approval successful. About to build calldata...");
+    // // Approve DAI spending
+    // console.log("Approving DAI spending...");
+    // const approveTx = await makerAssetContract.approve(ONE_INCH_LOP_ADDRESS, ethers.MaxUint256);
+    // await approveTx.wait();
+    // console.log("DEBUG STEP A: Approval successful. About to build calldata...");
 
-    try {
-        // Try different calldata methods based on what we have
-        let calldata;
+    // try {
+    //     // Try different calldata methods based on what we have
+    //     let calldata;
         
-        try {
-            console.log("Building calldata with getFillOrderArgsCalldata...");
-            calldata = LimitOrderContract.getFillOrderArgsCalldata(
-                order.build(),
-                signature,
-                takerTraits,
-                order.makingAmount
-            );
-            console.log("✅ getFillOrderArgsCalldata succeeded");
-        } catch (argsError) {
-            console.log("getFillOrderArgsCalldata failed:", argsError.message);
-            console.log("Trying getFillOrderCalldata...");
+    //     try {
+    //         console.log("Building calldata with getFillOrderArgsCalldata...");
+    //         calldata = LimitOrderContract.getFillOrderArgsCalldata(
+    //             order.build(),
+    //             signature,
+    //             takerTraits,
+    //             order.makingAmount
+    //         );
+    //         console.log("✅ getFillOrderArgsCalldata succeeded");
+    //     } catch (argsError) {
+    //         console.log("getFillOrderArgsCalldata failed:", argsError.message);
+    //         console.log("Trying getFillOrderCalldata...");
             
-            try {
-                calldata = LimitOrderContract.getFillOrderCalldata(
-                    order.build(),
-                    signature,
-                    takerTraits,
-                    order.makingAmount
-                );
-                console.log("✅ getFillOrderCalldata succeeded");
-            } catch (simpleError) {
-                console.log("getFillOrderCalldata also failed:", simpleError.message);
-                throw new Error("Both calldata methods failed");
-            }
-        }
+    //         try {
+    //             calldata = LimitOrderContract.getFillOrderCalldata(
+    //                 order.build(),
+    //                 signature,
+    //                 takerTraits,
+    //                 order.makingAmount
+    //             );
+    //             console.log("✅ getFillOrderCalldata succeeded");
+    //         } catch (simpleError) {
+    //             console.log("getFillOrderCalldata also failed:", simpleError.message);
+    //             throw new Error("Both calldata methods failed");
+    //         }
+    //     }
 
-        console.log("DEBUG STEP B: Calldata built successfully.");
-        console.log("Calldata length:", calldata.length);
+    //     console.log("DEBUG STEP B: Calldata built successfully.");
+    //     console.log("Calldata length:", calldata.length);
 
-        // Estimate gas first
-        try {
-            const gasEstimate = await provider.estimateGas({
-                to: ONE_INCH_LOP_ADDRESS,
-                data: calldata,
-                from: signer.address
-            });
-            console.log("Gas estimate:", gasEstimate.toString());
-        } catch (gasError) {
-            console.log("Gas estimation failed (this might be expected for complex orders):", gasError.message);
-        }
+    //     // Estimate gas first
+    //     try {
+    //         const gasEstimate = await provider.estimateGas({
+    //             to: ONE_INCH_LOP_ADDRESS,
+    //             data: calldata,
+    //             from: signer.address
+    //         });
+    //         console.log("Gas estimate:", gasEstimate.toString());
+    //     } catch (gasError) {
+    //         console.log("Gas estimation failed (this might be expected for complex orders):", gasError.message);
+    //     }
 
-        console.log("DEBUG STEP C: Sending transaction...");
-        const tx = await signer.sendTransaction({
-            to: ONE_INCH_LOP_ADDRESS,
-            data: calldata,
-            gasLimit: 500000 // Set a reasonable gas limit
-        });
+    //     console.log("DEBUG STEP C: Sending transaction...");
+    //     const tx = await signer.sendTransaction({
+    //         to: ONE_INCH_LOP_ADDRESS,
+    //         data: calldata,
+    //         gasLimit: 500000 // Set a reasonable gas limit
+    //     });
 
-        console.log("Transaction sent:", tx.hash);
-        console.log("Waiting for confirmation...");
-        const receipt = await tx.wait();
-        console.log("✅ Order filled successfully!");
-        console.log("Transaction receipt:", receipt.status === 1 ? "Success" : "Failed");
-    } catch (error) {
-        console.error("❌ Failed to fill order.");
+    //     console.log("Transaction sent:", tx.hash);
+    //     console.log("Waiting for confirmation...");
+    //     const receipt = await tx.wait();
+    //     console.log("✅ Order filled successfully!");
+    //     console.log("Transaction receipt:", receipt.status === 1 ? "Success" : "Failed");
+    // } catch (error) {
+    //     console.error("❌ Failed to fill order.");
         
-        // Parse the error to get more details
-        if (error.data) {
-            console.error("Error data:", error.data);
-        }
-        if (error.reason) {
-            console.error("Reason:", error.reason);
-        }
-        console.error("Full error:", error.message);
-    }
+    //     // Parse the error to get more details
+    //     if (error.data) {
+    //         console.error("Error data:", error.data);
+    //     }
+    //     if (error.reason) {
+    //         console.error("Reason:", error.reason);
+    //     }
+    //     console.error("Full error:", error.message);
+    // }
 }
 
 main().catch((error) => {

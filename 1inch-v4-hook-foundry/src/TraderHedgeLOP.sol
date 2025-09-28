@@ -47,7 +47,7 @@ contract TraderHedgeLOP is IPostInteraction, AbstractCallback {
      * The first parameter is ignored as per your RSC's design.
      * @param trader The address of the trader who performed the volatile swap.
      */
-    function demoSetter(address, address trader) external onlyReactiveContract {
+    function demoSetter(address, address trader) external authorizedSenderOnly() {
         activeHedger = trader;
         emit HedgeEnabled(trader);
     }
